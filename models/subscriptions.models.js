@@ -55,8 +55,14 @@ const subscriptionSchema = new mongoose.Schema(
           // This keyword refers to the object calling the method
           return value > this.startDate;
         },
-        message: "End Date Must Be Greater Than Start Date",
+        message: "Renewal Date Must Be Greater Than Start Date",
       },
+    },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
     },
   },
   { timestamps: true },
