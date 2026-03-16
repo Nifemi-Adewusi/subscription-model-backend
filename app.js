@@ -27,11 +27,12 @@ app.use(express.urlencoded({ extended: false }));
 
 //Gets and exposes cookies from the request headers
 app.use(cookieParser());
-app.use(errorMiddleware());
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/subscriptions", subscriptionRouter);
+
+app.use(errorMiddleware);
 
 app.listen(PORT, async () => {
   console.log(`Subscription Tracker is active on http://localhost:${PORT}`);
