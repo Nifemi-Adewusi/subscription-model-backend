@@ -74,7 +74,7 @@ export const signIn = async (req, res, next) => {
       existingUser.password,
     );
     if (!isPasswordValid) {
-      const error = new Error("Invalid Credentials");
+      const error = new Error("Incorrect or Invalid Password Entered");
       error.statusCode = 401;
       throw error;
     }
