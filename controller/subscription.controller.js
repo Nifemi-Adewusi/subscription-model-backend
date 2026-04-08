@@ -25,6 +25,32 @@ export const getAllUserSubscriptions = async (_, res, next) => {
   }
 };
 
+export const deleteSubscription = async (req, res, next) => {
+  try {
+    // Attempt to find and delete the subscription ONLY if it belongs to the current user
+    const subscription = await Subscription.findOneAndDelete({
+      _id: req.params.id,
+      user: req.user._id, // Verification happens here at the DB level
+    });
+
+    if (!subscription) {
+      const error = new Error(
+        "Subscription not found or you are not the owner",
+      );
+      error.statusCode = 404;
+      throw error;
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Subscription deleted successfully",
+      data: subscription,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getUserSubscription = async (req, res, next) => {
   try {
     if (req.user.id !== req.params.id) {
