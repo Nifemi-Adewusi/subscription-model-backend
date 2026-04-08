@@ -5,7 +5,7 @@ const subscriptionSchema = new mongoose.Schema(
     subscriptionName: {
       type: String,
       trim: true,
-      required: [true, "Subscription Name Is Required"],
+      required: [true, "Subscription Name(subscriptionName) Is Required"],
       minLength: 3,
       maxLength: 30,
     },
@@ -49,7 +49,7 @@ const subscriptionSchema = new mongoose.Schema(
     },
     renewalDate: {
       type: Date,
-      required: true,
+      // required: true,
       validate: {
         validator: function (value) {
           // This keyword refers to the object calling the method
@@ -70,7 +70,8 @@ const subscriptionSchema = new mongoose.Schema(
 
 // Auto calculate renewal date if missing
 
-subscriptionSchema.pre("save", function (next) {
+subscriptionSchema.pre("save", async function () {
+  // Auto-calculate renewal date if missing
   if (!this.renewalDate) {
     const renewalPeriods = {
       daily: 1,
@@ -82,15 +83,14 @@ subscriptionSchema.pre("save", function (next) {
     this.renewalDate.setDate(
       this.renewalDate.getDate() + renewalPeriods[this.frequency],
     );
-    // next();
   }
-  //   Auto Generate the status if renewal date has passed
+
+  // Auto-update status if renewal date has passed
   if (this.renewalDate < new Date()) {
     this.status = "expired";
   }
-  next();
 });
 
-const subscription = mongoose.model("Subscription", subscriptionSchema);
+const Subscription = mongoose.model("Subscription", subscriptionSchema);
 
-export default subscription;
+export default Subscription;
